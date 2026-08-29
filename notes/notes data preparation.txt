@@ -1,0 +1,78 @@
+************************** DATA PREPARATION **************************
+========== CATEGORICAL FEATURES ========== 
+user_id - DROP because its irrelevant
+date - DROP because its irrelevant
+day_of_week - DROP because its irrelevant 
+gender 
+fitness_level 
+primary_sport - DROP because its irrelevant
+activity_type 
+workout_time_of_day - DROP because its irrelevant and lots of missing values
+
+========== NUMERICAL FEATURES ========== 
+age - discrete 
+weight_kg - continuous - has outliner - no outliner treatment: its realistic
+height_cm - continuous - no outliner
+recovery_score - continuous - has outliner - no outliner treatment: its the target variable
+day_strain - continuous - no outliner
+sleep_hours - continuous - has outliner - no outliner treatment: its realistic
+sleep_efficiency - continuous - has outliner - no outliner treatment: its realistic
+sleep_performance - DROP because only ONE unique value
+light_sleep_hours - continuous - has outliner - no outliner treatment: its realistic
+rem_sleep_hours - continuous - has outliner - no outliner treatment: its realistic
+deep_sleep_hours - continuous - has outliner - no outliner treatment: its realistic
+wake_ups - discrete 
+time_to_fall_asleep_min - continuous - has many outliner - no outliner treatment: its realistic - it needs to be transformed
+hrv - continuous - no outliner
+resting_heart_rate - continuous - no outliner - no outliner treatment: its realistic
+hrv_baseline - continuous - no outliner 
+rhr_baseline - continuous - no outliner
+respiratory_rate - continuous - has outliner - no outliner treatment: its realistic
+skin_temp_deviation - continuous - has outliner - no outliner treatment: its realistic
+calories_burned  - continuous - has outliner - no outliner treatment: its realistic
+workout_completed - discrete
+activity_duration_min - continuous - no outliner
+activity_strain - continuous - no outliner
+avg_heart_rate - continuous - no outliner
+max_heart_rate - DROP because its correlation to avg_heart_rate is 1.0 and decided to keep the avg_heart_rate
+activity_calories - continuous - has outliner - no outliner treatment: its realistic - it needs to be transformed
+hr_zone_1_min - continuous - has outliner - no outliner treatment: its realistic - it needs to be transformed
+hr_zone_2_min - continuous - has outliner - no outliner treatment: its realistic - it needs to be transformed
+hr_zone_3_min - continuous - has outliner - no outliner treatment: its realistic - it needs to be transformed
+hr_zone_4_min - continuous - has outliner - no outliner treatment: its realistic - it needs to be transformed
+hr_zone_5_min - continuous - has outliner - no outliner treatment: its realistic - it needs to be transformed
+
+@@@@@@@@@@@@ THIS IS UNDER DATA PREPARATION @@@@@@@@@@@@
+// light_sleep_hours with sleep_hours has correlation of 0.97
+// DROP light_sleep_hours
+
+
+
+@@@@@@@@@@@@ THIS IS UNDER DATA PREPARATION @@@@@@@@@@@@
+// they have corr relation of 0.96
+// in par with target variable, calories_burned has corr relation of 0.04
+// day_strain has 0.03
+// DROP day_strain
+calories_burned 
+day_strain
+
+@@@@@@@@@@@@ THIS IS UNDER DATA PREPARATION @@@@@@@@@@@@
+// workout_completed with avg_heart_rate has corr relation of 0.99
+// in par with target variable, workout_completed has corr relation of 0.06
+// avg_heart_rate also has 0.06
+// DROP avg_heart_rate since we dont have to transform workout_completed, saves time and cost
+workout_completed - discrete (0, 1)
+avg_heart_rate - continuous
+
+activity_duration_min - do nothing
+activity_strain - do nothing
+
+@@@@@@@@@@@@ THIS IS UNDER DATA PREPARATION @@@@@@@@@@@@
+// activity_calories with hr_zone_3_min to hr_zone_5_min has corr relation of > 0.90
+// in par with target variable, activity_calories has corr relation of 0.01
+// corr relation of hr_zone_3_min to hr_zone_5_min are 0.06, 0.09, 0.10, respectively
+// DROP activity_calories because it gives less details compared to the other three
+activity_calories
+hr_zone_3_min
+hr_zone_4_min
+hr_zone_5_min

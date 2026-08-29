@@ -1,0 +1,34 @@
+DROP IRRELEVANT FEATURES
+    [
+        "user_id",
+        "date",
+        "day_of_week",
+        "primary_sport",
+        "workout_time_of_day"
+    ]
+
+FEATURE GENERATION
+high_intensity_min = hr_zone_3_min + hr_zone_4_min + hr_zone_5_min
+low_intensity_min = hr_zone_1_min + hr_zone_2_min
+hrv_ratio = hrv / hrv_baseline
+rhr_ratio = resting_heart_rate / rhr_baseline
+rem_sleep_hours_ratio = rem_sleep_hours / sleep_hours
+deep_sleep_hours_ratio = deep_sleep_hours / sleep_hours
+bmi = weight_kg / ( height_cm / 100)^2 - continuous
+
+ENCODING 
+
+perform one hot encoding on:
+gender
+activity_type
+
+perform ordinal encoding on:
+
+fitness_level
+['Beginner', 'Intermediate', 'Advanced', 'Elite]
+
+
+FEATURE SELECTION
+
+perform RFECV with LGBM regressor
+
