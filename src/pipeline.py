@@ -1,5 +1,9 @@
 # %%
-from functions import drop_irr_features, feature_generation
+import sys
+
+sys.path.append("../src")
+
+from functions import drop_irr_features, historical_feature_generation, daily_feature_generation
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
@@ -14,8 +18,8 @@ from sklearn.preprocessing import (
 set_config(transform_output="pandas")
 
 # %%
-drop_irr_feat_transformer = FunctionTransformer(drop_irr_features)
-generate_feature_transformer = FunctionTransformer(feature_generation)
+historical_feature_transformer = FunctionTransformer(historical_feature_generation)
+daily_feature_transformer = FunctionTransformer(daily_feature_generation)
 
 # %%
 col_to_oneHotEncoding = ["gender", "activity_type"]
@@ -39,18 +43,25 @@ encoding_transformer = ColumnTransformer(
 )
 
 # %%
+drop_irr_feat_transformer = FunctionTransformer(drop_irr_features)
+
+# %%
+from sklearn.impute import SimpleImputer
+
+nan_imputer = SimpleImputer(strategy="constant", fill_value=0)
+
+# %%
 from lightgbm import LGBMRegressor
-from sklearn.model_selection import KFold
+from sklearn.model_selection import GroupKFold
 from sklearn.feature_selection import RFECV
 
 estimator = LGBMRegressor(
     random_state=42,
-    n_estimators=50,
     importance_type="gain",  
     verbose=-1,  
     n_jobs=1
 )
-cv = KFold(n_splits=5, shuffle=True, random_state=42)
+cv = GroupKFold(n_splits=5)
 
 feature_selector = RFECV(
     estimator=estimator,
@@ -61,12 +72,25 @@ feature_selector = RFECV(
 )
 
 # %%
-data_preparation_pipeline = Pipeline([
-    ('drop_irrelevant_features', drop_irr_feat_transformer),
-    ('feature_generation', generate_feature_transformer),
+
+historical_data_preparation_pipeline = Pipeline([
+    ('feature_generation', historical_feature_transformer),
     ('encoding', encoding_transformer),
+    ('drop_irrelevant_features', drop_irr_feat_transformer),
+    ('imputer', nan_imputer),
     ('feature_selection', feature_selector)
 ]).set_output(transform="pandas")
 
+# %%
+daily_data_preparation_pipeline = Pipeline([
+    ('feature_generation', daily_feature_transformer),
+    ('encoding', encoding_transformer),
+    ('drop_irrelevant_features', drop_irr_feat_transformer),
+    ('imputer', nan_imputer),
+    ('feature_selection', feature_selector)
+]).set_output(transform="pandas")
 
+# %%
 print("pipeline.py imported successfully")
+
+

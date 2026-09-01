@@ -1,13 +1,9 @@
-DROP IRRELEVANT FEATURES
-    [
-        "user_id",
-        "date",
-        "day_of_week",
-        "primary_sport",
-        "workout_time_of_day"
-    ]
+
 
 FEATURE GENERATION
+
+sort first user id and date
+
 high_intensity_min = hr_zone_3_min + hr_zone_4_min + hr_zone_5_min
 low_intensity_min = hr_zone_1_min + hr_zone_2_min
 hrv_ratio = hrv / hrv_baseline
@@ -16,6 +12,35 @@ rem_sleep_hours_ratio = rem_sleep_hours / sleep_hours
 deep_sleep_hours_ratio = deep_sleep_hours / sleep_hours
 bmi = weight_kg / ( height_cm / 100)^2 - continuous
 
+previous_hrv = above current hrv
+previous_resting_heart_rate = above current resting_heart_rate
+previous_respiratory_rate = above respiratory_rate
+previous_skin_temp_deviation = above skin_temp_deviation
+previous_sleep_hours = above current sleep_hours
+previous_sleep_efficiency = above sleep_efficiency
+previous_rem_sleep_hours = above rem_sleep_hours
+previous_deep_sleep_hours = above deep_sleep_hours
+previous_light_sleep_hours = above light_sleep_hours
+previous_wake_ups = above wake_ups
+previous_day_strain = above current day_strain
+previous_activity_strain = above current activity_strain
+previous_activity_duration_min = above activity_duration_min
+
+hrv_change = hrv - previous_hrv
+resting_heart_rate_change = resting_heart_rate - previous_resting_heart_rate
+respiratory_rate_change = respiratory_rate - previous_respiratory_rate
+skin_temp_deviation_change= skin_temp_deviation - previous_skin_temp_deviation
+sleep_hours_change = sleep_hours - previous_sleep_hours
+sleep_efficiency_change = sleep_efficiency - previous_sleep_efficiency
+rem_sleep_hours_change = rem_sleep_hours - previous_rem_sleep_hours
+deep_sleep_hours_change = deep_sleep_hours - previous_deep_sleep_hours
+light_sleep_hours_change = light_sleep_hours - previous_light_sleep_hours
+wake_ups_change = wake_ups - previous_wake_ups
+day_strain_change = day_strain - day_strain - previous_day_strain
+activity_strain_change = activity_strain - previous_activity_strain
+activity_duration_min_change = activity_duration_min - previous_activity_duration_min
+
+is_first_record = 1 if it has NaN (dont read the workout_time_of_day)
 ENCODING 
 
 perform one hot encoding on:
@@ -27,6 +52,18 @@ perform ordinal encoding on:
 fitness_level
 ['Beginner', 'Intermediate', 'Advanced', 'Elite]
 
+DROP IRRELEVANT FEATURES
+    [
+        "user_id",
+        "date",
+        "day_of_week",
+        "primary_sport",
+        "workout_time_of_day"
+    ]
+
+IMPUTER
+
+replace NaN with 0
 
 FEATURE SELECTION
 

@@ -1,3 +1,5 @@
+split the dataset based on user_id
+
 Models to use:
 - Decision Tree Regressor
 - Random Forest Regressor
